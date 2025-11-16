@@ -1,0 +1,72 @@
+sequenceDiagram
+    participant User
+    participant UI as Privacy Dashboard
+    participant PrivacyMgr as Privacy Manager
+    participant PermCtrl as Permission Controller
+    participant Encrypt as Encryption Service
+    participant Memory as Memory System
+    participant Plugin as Plugin System
+    participant Analytics as Analytics Service
+    participant Audit as Audit Log
+    
+    Note over User,Audit: 1. Initial Privacy Setup
+    User->>UI: Open Privacy Settings
+    UI->>PrivacyMgr: Request Current Settings
+    PrivacyMgr-->>UI: Privacy Configuration
+    User->>UI: Configure Privacy Preferences
+    UI->>PrivacyMgr: Update Settings
+    PrivacyMgr->>Audit: Log Privacy Change
+    
+    Note over User,Audit: 2. Data Encryption Flow
+    User->>Memory: Save Conversation
+    Memory->>PrivacyMgr: Request Encryption Policy
+    PrivacyMgr-->>Memory: Encryption Required
+    Memory->>Encrypt: Encrypt Data (AES-256)
+    Encrypt-->>Memory: Encrypted Data
+    Memory->>Audit: Log Data Storage
+    Memory-->>User: Data Saved Securely
+    
+    Note over User,Audit: 3. Plugin Permission Flow
+    Plugin->>PermCtrl: Request Permission<br/>(e.g., read_messages)
+    PermCtrl->>PrivacyMgr: Check User Preferences
+    
+    alt Permission Granted
+        PrivacyMgr-->>PermCtrl: Allowed
+        PermCtrl->>Audit: Log Permission Grant
+        PermCtrl-->>Plugin: Permission Granted
+        Plugin->>Memory: Access Data
+    else Permission Denied
+        PrivacyMgr-->>PermCtrl: Denied
+        PermCtrl->>Audit: Log Permission Denial
+        PermCtrl-->>Plugin: Permission Denied
+        Plugin->>User: Show Permission Request
+    end
+    
+    Note over User,Audit: 4. Analytics Opt-in/out Flow
+    User->>UI: Toggle Analytics
+    UI->>PrivacyMgr: Update Analytics Setting
+    
+    alt Analytics Enabled
+        PrivacyMgr->>Analytics: Enable (Anonymized Only)
+        Analytics->>Encrypt: Anonymize Data
+        Encrypt-->>Analytics: Anonymized Data
+        Analytics->>Audit: Log Analytics Event
+    else Analytics Disabled
+        PrivacyMgr->>Analytics: Disable All Tracking
+        Analytics->>Audit: Log Analytics Disabled
+    end
+    
+    Note over User,Audit: 5. Data Access Audit
+    User->>UI: View Audit Log
+    UI->>Audit: Request Access History
+    Audit-->>UI: Access Log Entries
+    UI-->>User: Display Access History
+    
+    Note over User,Audit: 6. Data Deletion Flow
+    User->>UI: Request Data Deletion
+    UI->>PrivacyMgr: Delete User Data
+    PrivacyMgr->>Memory: Delete Conversations
+    PrivacyMgr->>Encrypt: Secure Wipe
+    PrivacyMgr->>Audit: Log Data Deletion
+    Audit-->>UI: Deletion Complete
+    UI-->>User: Data Deleted Successfully

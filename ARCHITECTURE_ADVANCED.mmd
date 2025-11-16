@@ -1,0 +1,147 @@
+graph TB
+    subgraph "Desktop Client Layer"
+        UI[UI Components]
+        Overlay[Transparent Overlay]
+        Input[Input Handler<br/>Voice/Text/Mouse]
+        ErrorUI[Error Display & Recovery UI]
+    end
+    
+    subgraph "Avatar Engine Layer"
+        AvatarRenderer[Avatar Renderer]
+        Live2D[Live2D Engine]
+        VRM[VRM Engine]
+        AnimController[Animation Controller]
+        ExprMapper[Expression Mapper]
+        AssetFallback[Asset Fallback Handler]
+    end
+    
+    subgraph "Core AI Layer"
+        EventBus[Event Bus]
+        LLM[LLM Module<br/>LangChain/Ollama/OpenAI]
+        STT[Speech-to-Text<br/>Whisper]
+        TTS[Text-to-Speech<br/>Coqui/Edge TTS]
+        Memory[Memory System<br/>Vector DB + RAG]
+        ContextMgr[Context Manager]
+        PersonaEngine[Persona Engine<br/>Custom Behavior & Training]
+        ErrorHandler[Error Handler<br/>Retry & Fallback Logic]
+    end
+    
+    subgraph "Security & Privacy Layer"
+        PrivacyMgr[Privacy Manager]
+        Encryption[Data Encryption<br/>AES-256]
+        PermissionCtrl[Permission Controller]
+        Analytics[Analytics Opt-in/out]
+        DataAudit[Data Audit Log]
+    end
+    
+    subgraph "Plugin System Layer"
+        PluginLoader[Plugin Loader]
+        PluginAPI[Plugin API]
+        PluginMgr[Plugin Manager]
+        Plugins[Plugins<br/>Assistant/Game/Mini-Apps]
+        PluginSandbox[Plugin Sandbox<br/>Isolated Execution]
+    end
+    
+    subgraph "Data & Asset Layer"
+        AssetStore[Asset Storage]
+        Models[Avatar Models]
+        Animations[Animations]
+        Presets[Presets]
+        UserData[User Data<br/>Conversations/Settings]
+        PersonaProfiles[Persona Profiles<br/>Custom Behaviors]
+    end
+    
+    subgraph "External Services Layer"
+        Marketplace[Asset Marketplace<br/>Community Hub]
+        CloudSync[Cloud Sync Service<br/>Optional]
+        ExternalAPI[External APIs<br/>Weather/News/etc]
+        UpdateService[Update Service<br/>Auto-update]
+    end
+    
+    User((User)) -->|Voice/Text| Input
+    Input -->|Audio| STT
+    Input -->|Text| EventBus
+    STT -->|Transcribed Text| EventBus
+    STT -.->|STT Failed| ErrorHandler
+    
+    EventBus -->|Query| LLM
+    EventBus -->|Context Request| Memory
+    EventBus -->|Load Persona| PersonaEngine
+    Memory -->|Context| LLM
+    PersonaEngine -->|Behavior Rules| LLM
+    LLM -->|Response + Emotion| EventBus
+    LLM -.->|LLM Timeout| ErrorHandler
+    
+    EventBus -->|Response Text| TTS
+    EventBus -->|Emotion Tag| ExprMapper
+    TTS -->|Audio| UI
+    TTS -.->|TTS Failed| ErrorHandler
+    
+    ExprMapper -->|Expression Data| AnimController
+    AnimController -->|Animation Commands| AvatarRenderer
+    AvatarRenderer -->|Render| Live2D
+    AvatarRenderer -->|Render| VRM
+    AvatarRenderer -.->|Asset Missing| AssetFallback
+    Live2D -->|Visual Output| Overlay
+    VRM -->|Visual Output| Overlay
+    
+    Overlay -->|Display| User
+    UI -->|Display| User
+    ErrorHandler -->|Error Info| ErrorUI
+    ErrorUI -->|Show Error| User
+    
+    EventBus <-->|Plugin Events| PluginAPI
+    PluginAPI <-->|Load/Manage| PluginLoader
+    PluginLoader -->|Execute in Sandbox| PluginSandbox
+    PluginSandbox -->|Run| Plugins
+    Plugins -->|Custom Events| EventBus
+    
+    PermissionCtrl -->|Check Permissions| PluginSandbox
+    PermissionCtrl -->|Validate| PluginAPI
+    
+    LLM <-->|Store/Retrieve| Memory
+    Memory <-->|Encrypt/Decrypt| Encryption
+    Encryption <-->|Read/Write| UserData
+    
+    PersonaEngine <-->|Load/Save Profiles| PersonaProfiles
+    PersonaProfiles <-->|Encrypt| Encryption
+    
+    AvatarRenderer <-->|Load Assets| AssetStore
+    AssetStore -->|Models| Models
+    AssetStore -->|Animations| Animations
+    AssetStore -->|Presets| Presets
+    AssetFallback -->|Load Default| AssetStore
+    
+    ContextMgr -->|Manage Context| Memory
+    ContextMgr -->|Provide Context| LLM
+    
+    PluginMgr -->|Manage| PluginLoader
+    
+    PrivacyMgr -->|Control| Encryption
+    PrivacyMgr -->|Manage| PermissionCtrl
+    PrivacyMgr -->|Configure| Analytics
+    PrivacyMgr -->|Log Access| DataAudit
+    
+    Analytics -.->|Send Anonymized Data| CloudSync
+    AssetStore <-.->|Download Assets| Marketplace
+    PluginMgr <-.->|Install Plugins| Marketplace
+    UserData <-.->|Backup/Restore| CloudSync
+    PersonaProfiles <-.->|Share Personas| Marketplace
+    
+    Plugins <-.->|Call External APIs| ExternalAPI
+    UI <-.->|Check Updates| UpdateService
+    
+    ErrorHandler -->|Retry| LLM
+    ErrorHandler -->|Retry| STT
+    ErrorHandler -->|Retry| TTS
+    ErrorHandler -->|Fallback Mode| EventBus
+    
+    style User fill:#e1f5ff
+    style EventBus fill:#ffe1e1
+    style LLM fill:#fff4e1
+    style AvatarRenderer fill:#e1ffe1
+    style PluginAPI fill:#f4e1ff
+    style PrivacyMgr fill:#ffe1f4
+    style ErrorHandler fill:#ffe8e1
+    style PersonaEngine fill:#e1f4ff
+    style Marketplace fill:#f4ffe1

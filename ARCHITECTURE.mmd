@@ -1,0 +1,85 @@
+graph TB
+    subgraph "Desktop Client Layer"
+        UI[UI Components]
+        Overlay[Transparent Overlay]
+        Input[Input Handler<br/>Voice/Text/Mouse]
+    end
+    
+    subgraph "Avatar Engine Layer"
+        AvatarRenderer[Avatar Renderer]
+        Live2D[Live2D Engine]
+        VRM[VRM Engine]
+        AnimController[Animation Controller]
+        ExprMapper[Expression Mapper]
+    end
+    
+    subgraph "Core AI Layer"
+        EventBus[Event Bus]
+        LLM[LLM Module<br/>LangChain/Ollama/OpenAI]
+        STT[Speech-to-Text<br/>Whisper]
+        TTS[Text-to-Speech<br/>Coqui/Edge TTS]
+        Memory[Memory System<br/>Vector DB + RAG]
+        ContextMgr[Context Manager]
+    end
+    
+    subgraph "Plugin System Layer"
+        PluginLoader[Plugin Loader]
+        PluginAPI[Plugin API]
+        PluginMgr[Plugin Manager]
+        Plugins[Plugins<br/>Assistant/Game/Mini-Apps]
+    end
+    
+    subgraph "Data & Asset Layer"
+        AssetStore[Asset Storage]
+        Models[Avatar Models]
+        Animations[Animations]
+        Presets[Presets]
+        UserData[User Data<br/>Conversations/Settings]
+    end
+    
+    User((User)) -->|Voice/Text| Input
+    Input -->|Audio| STT
+    Input -->|Text| EventBus
+    STT -->|Transcribed Text| EventBus
+    
+    EventBus -->|Query| LLM
+    EventBus -->|Context Request| Memory
+    Memory -->|Context| LLM
+    LLM -->|Response + Emotion| EventBus
+    
+    EventBus -->|Response Text| TTS
+    EventBus -->|Emotion Tag| ExprMapper
+    TTS -->|Audio| UI
+    
+    ExprMapper -->|Expression Data| AnimController
+    AnimController -->|Animation Commands| AvatarRenderer
+    AvatarRenderer -->|Render| Live2D
+    AvatarRenderer -->|Render| VRM
+    Live2D -->|Visual Output| Overlay
+    VRM -->|Visual Output| Overlay
+    
+    Overlay -->|Display| User
+    UI -->|Display| User
+    
+    EventBus <-->|Plugin Events| PluginAPI
+    PluginAPI <-->|Load/Manage| PluginLoader
+    PluginLoader -->|Execute| Plugins
+    Plugins -->|Custom Events| EventBus
+    
+    LLM <-->|Store/Retrieve| Memory
+    Memory <-->|Read/Write| UserData
+    AvatarRenderer <-->|Load Assets| AssetStore
+    AssetStore -->|Models| Models
+    AssetStore -->|Animations| Animations
+    AssetStore -->|Presets| Presets
+    
+    ContextMgr -->|Manage Context| Memory
+    ContextMgr -->|Provide Context| LLM
+    
+    PluginMgr -->|Manage| PluginLoader
+    
+    style User fill:#e1f5ff
+    style EventBus fill:#ffe1e1
+    style LLM fill:#fff4e1
+    style AvatarRenderer fill:#e1ffe1
+    style PluginAPI fill:#f4e1ff

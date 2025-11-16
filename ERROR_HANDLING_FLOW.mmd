@@ -1,0 +1,83 @@
+flowchart TD
+    Start([User Input]) --> InputHandler[Input Handler]
+    
+    InputHandler -->|Voice| STT[Speech-to-Text]
+    InputHandler -->|Text| EventBus[Event Bus]
+    
+    STT -->|Success| EventBus
+    STT -->|Failed| STTError{STT Error Handler}
+    
+    STTError -->|Retry < 3| STTRetry[Retry STT]
+    STTRetry --> STT
+    STTError -->|Retry >= 3| STTFallback[Fallback to Text Input]
+    STTFallback --> NotifyUser1[Notify User: Use Text]
+    NotifyUser1 --> EventBus
+    
+    EventBus --> LLM[LLM Processing]
+    
+    LLM -->|Success| Response[Generate Response]
+    LLM -->|Timeout| LLMTimeout{LLM Timeout Handler}
+    LLM -->|API Error| LLMError{LLM Error Handler}
+    
+    LLMTimeout -->|Retry < 3| LLMRetry1[Retry with Shorter Context]
+    LLMRetry1 --> LLM
+    LLMTimeout -->|Retry >= 3| LLMFallback1[Use Cached Response]
+    LLMFallback1 --> Response
+    
+    LLMError -->|Network Error| LLMRetry2[Retry Connection]
+    LLMRetry2 --> LLM
+    LLMError -->|Auth Error| LLMFallback2[Use Offline Mode]
+    LLMFallback2 --> OfflineLLM[Local LLM Fallback]
+    OfflineLLM --> Response
+    LLMError -->|Rate Limit| LLMWait[Wait & Retry]
+    LLMWait --> LLM
+    
+    Response --> TTS[Text-to-Speech]
+    Response --> Avatar[Avatar Animation]
+    
+    TTS -->|Success| PlayAudio[Play Audio]
+    TTS -->|Failed| TTSError{TTS Error Handler}
+    
+    TTSError -->|Retry < 3| TTSRetry[Retry TTS]
+    TTSRetry --> TTS
+    TTSError -->|Retry >= 3| TTSFallback[Text-only Mode]
+    TTSFallback --> DisplayText[Display Text Response]
+    
+    Avatar -->|Success| DisplayAvatar[Display Avatar Animation]
+    Avatar -->|Asset Missing| AssetError{Asset Error Handler}
+    
+    AssetError -->|Check Cache| CacheCheck{Asset in Cache?}
+    CacheCheck -->|Yes| LoadCache[Load from Cache]
+    LoadCache --> DisplayAvatar
+    CacheCheck -->|No| DownloadAsset{Download Available?}
+    
+    DownloadAsset -->|Yes| Download[Download Asset]
+    Download --> DisplayAvatar
+    DownloadAsset -->|No| DefaultAsset[Use Default Asset]
+    DefaultAsset --> DisplayAvatar
+    
+    AssetError -->|Corrupted| RedownloadAsset[Redownload Asset]
+    RedownloadAsset --> DisplayAvatar
+    
+    PlayAudio --> End([Output to User])
+    DisplayText --> End
+    DisplayAvatar --> End
+    
+    NotifyUser1 --> LogError1[Log Error to Audit]
+    LLMFallback1 --> LogError2[Log Error to Audit]
+    LLMFallback2 --> LogError3[Log Error to Audit]
+    TTSFallback --> LogError4[Log Error to Audit]
+    DefaultAsset --> LogError5[Log Error to Audit]
+    
+    style Start fill:#e1f5ff
+    style End fill:#e1ffe1
+    style STTError fill:#ffe1e1
+    style LLMTimeout fill:#ffe1e1
+    style LLMError fill:#ffe1e1
+    style TTSError fill:#ffe1e1
+    style AssetError fill:#ffe1e1
+    style LogError1 fill:#fff4e1
+    style LogError2 fill:#fff4e1
+    style LogError3 fill:#fff4e1
+    style LogError4 fill:#fff4e1
+    style LogError5 fill:#fff4e1

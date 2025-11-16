@@ -1,0 +1,22 @@
+{
+  "name": "BasicPlugin",
+  "version": "0.1.0",
+  "description": "A basic plugin template",
+  "author": "Your Name",
+  "entry_point": "plugin.py",
+  "dependencies": [],
+  "permissions": [
+    "read_messages",
+    "send_messages"
+  ],
+  "config": {
+    "enabled": true,
+    "auto_start": false
+  },
+  "events": {
+    "subscribe": [
+      "user_message",
+      "llm_response"
+    ]
+  }
+}

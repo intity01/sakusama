@@ -1,0 +1,62 @@
+sequenceDiagram
+    participant User
+    participant Desktop as Desktop Client
+    participant Avatar as Avatar Engine
+    participant STT as Speech-to-Text
+    participant LLM as LLM Module
+    participant Memory as Memory System
+    participant TTS as Text-to-Speech
+    participant Plugin as Plugin System
+    
+    Note over User,Plugin: 1. Initialization Phase
+    Desktop->>Avatar: Load Avatar Model
+    Avatar-->>Desktop: Avatar Ready
+    Desktop->>LLM: Initialize LLM
+    LLM-->>Desktop: LLM Ready
+    Desktop->>Memory: Load User Context
+    Memory-->>Desktop: Context Loaded
+    
+    Note over User,Plugin: 2. User Interaction Loop
+    User->>Desktop: Voice/Text Input
+    
+    alt Voice Input
+        Desktop->>STT: Audio Stream
+        STT-->>Desktop: Transcribed Text
+    end
+    
+    Desktop->>Memory: Request Context
+    Memory-->>Desktop: Relevant Context
+    
+    Desktop->>LLM: Query + Context
+    LLM->>LLM: Process & Generate Response
+    LLM-->>Desktop: Response + Emotion Tag
+    
+    par Parallel Processing
+        Desktop->>TTS: Response Text
+        TTS-->>Desktop: Audio Stream
+        Desktop->>Avatar: Emotion Tag
+        Avatar->>Avatar: Map to Animation
+        Avatar-->>Desktop: Animation Frames
+    end
+    
+    Desktop->>User: Audio + Visual Output
+    
+    Desktop->>Memory: Log Conversation
+    Memory-->>Desktop: Saved
+    
+    Note over User,Plugin: 3. Plugin Event Handling
+    opt Plugin Triggered
+        Desktop->>Plugin: Event Data
+        Plugin->>Plugin: Execute Custom Logic
+        Plugin-->>Desktop: Result
+        Desktop->>Avatar: Update Animation
+        Desktop->>User: Plugin Output
+    end
+    
+    Note over User,Plugin: 4. Continuous Loop
+    loop Every Interaction
+        User->>Desktop: New Input
+        Desktop->>LLM: Process
+        LLM-->>Desktop: Response
+        Desktop->>User: Output
+    end

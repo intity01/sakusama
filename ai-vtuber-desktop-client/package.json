@@ -1,0 +1,33 @@
+{
+  "name": "ai-vtuber-desktop-client",
+  "version": "0.1.0",
+  "description": "Desktop client for AI VTuber Companion",
+  "main": "dist/main/index.js",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "start": "electron .",
+    "test": "vitest"
+  },
+  "keywords": [
+    "ai",
+    "vtuber",
+    "desktop",
+    "companion",
+    "electron"
+  ],
+  "author": "AI VTuber Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "electron": "^28.0.0",
+    "electron-vite": "^2.0.0",
+    "typescript": "^5.0.0",
+    "vite": "^5.0.0",
+    "vitest": "^1.0.0"
+  },
+  "dependencies": {
+    "electron-store": "^8.0.0"
+  }
+}

@@ -1,0 +1,30 @@
+# LLM and AI
+langchain>=0.1.0
+openai>=1.0.0
+anthropic>=0.8.0
+google-generativeai>=0.3.0
+
+# Vector Database
+chromadb>=0.4.0
+sentence-transformers>=2.2.0
+
+# Speech Processing
+openai-whisper>=20231117
+TTS>=0.20.0
+
+# Event System
+pydantic>=2.0.0
+python-dotenv>=1.0.0
+
+# Utilities
+requests>=2.31.0
+aiohttp>=3.9.0
+pyyaml>=6.0
+cryptography>=41.0.0
+
+# TTS (Text-to-Speech)
+edge-tts>=6.1.0
+
+# Testing
+pytest>=7.4.0
+pytest-asyncio>=0.21.0

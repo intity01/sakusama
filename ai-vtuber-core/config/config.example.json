@@ -1,0 +1,140 @@
+{
+  "llm": {
+    "provider": "ollama",
+    "models": {
+      "openai": {
+        "model": "gpt-4.1-mini",
+        "api_key": "",
+        "base_url": "https://api.openai.com/v1"
+      },
+      "ollama": {
+        "model": "llama3.2:3b",
+        "api_key": "ollama",
+        "base_url": "http://localhost:11434"
+      },
+      "gemini": {
+        "model": "gemini-1.5-flash-latest",
+        "api_key": "",
+        "base_url": ""
+      }
+    },
+    "temperature": 0.7,
+    "max_tokens": 500,
+    "system_prompt": "You are a friendly VTuber companion. Be cheerful, supportive, and engaging.",
+    "fallback": {
+      "enabled": true,
+      "provider": "ollama",
+      "model": "llama3.2:3b"
+    },
+    "retry": {
+      "max_attempts": 3,
+      "timeout_seconds": 30,
+      "backoff_multiplier": 2
+    }
+  },
+  "tts": {
+    "engine": "coqui",
+    "voice": "default",
+    "speed": 1.0,
+    "pitch": 1.0,
+    "fallback": {
+      "enabled": true,
+      "engine": "edge"
+    },
+    "retry": {
+      "max_attempts": 3
+    }
+  },
+  "stt": {
+    "engine": "whisper",
+    "model": "base",
+    "language": "auto",
+    "fallback": {
+      "enabled": true,
+      "text_input_mode": true
+    },
+    "retry": {
+      "max_attempts": 3
+    }
+  },
+  "memory": {
+    "type": "chromadb",
+    "path": "./data/memory",
+    "max_context_length": 10,
+    "embedding_model": "all-MiniLM-L6-v2",
+    "encryption": {
+      "enabled": true,
+      "algorithm": "AES-256"
+    }
+  },
+  "events": {
+    "bus_type": "local",
+    "max_queue_size": 100,
+    "error_handling": {
+      "log_errors": true,
+      "notify_user": true
+    }
+  },
+  "plugins": {
+    "enabled": true,
+    "auto_load": true,
+    "plugin_directory": "./plugins",
+    "sandbox": {
+      "enabled": true,
+      "default_permissions": []
+    }
+  },
+  "persona": {
+    "enabled": true,
+    "default_persona": "saku",
+    "persona_directory": "./personas",
+    "allow_custom_personas": true
+  },
+  "security": {
+    "privacy_manager": {
+      "enabled": true,
+      "encryption_at_rest": true,
+      "encryption_in_transit": true
+    },
+    "permission_controller": {
+      "enabled": true,
+      "require_user_approval": true
+    },
+    "analytics": {
+      "enabled": false,
+      "anonymize_data": true,
+      "opt_in_required": true
+    },
+    "audit_log": {
+      "enabled": true,
+      "log_path": "./data/audit.log",
+      "retention_days": 90
+    }
+  },
+  "external_services": {
+    "marketplace": {
+      "enabled": false,
+      "url": "https://marketplace.example.com"
+    },
+    "cloud_sync": {
+      "enabled": false,
+      "provider": "none"
+    },
+    "update_service": {
+      "enabled": true,
+      "check_interval_hours": 24,
+      "auto_update": false
+    }
+  },
+  "error_handling": {
+    "global": {
+      "log_errors": true,
+      "show_error_ui": true,
+      "fallback_mode": "graceful"
+    },
+    "asset_fallback": {
+      "use_default_assets": true,
+      "cache_assets": true
+    }
+  }
+}

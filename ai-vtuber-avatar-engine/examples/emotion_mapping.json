@@ -1,0 +1,84 @@
+{
+  "emotion_mappings": {
+    "happy": {
+      "expression": "smile",
+      "animation": "happy_bounce",
+      "intensity": 0.8,
+      "duration": 2.0,
+      "parameters": {
+        "mouth_open": 0.6,
+        "eye_open": 1.0,
+        "eyebrow_position": 0.3
+      }
+    },
+    "sad": {
+      "expression": "sad",
+      "animation": "sad_droop",
+      "intensity": 0.7,
+      "duration": 2.5,
+      "parameters": {
+        "mouth_open": 0.2,
+        "eye_open": 0.6,
+        "eyebrow_position": -0.4
+      }
+    },
+    "surprised": {
+      "expression": "surprised",
+      "animation": "surprise_jump",
+      "intensity": 0.9,
+      "duration": 1.5,
+      "parameters": {
+        "mouth_open": 0.8,
+        "eye_open": 1.2,
+        "eyebrow_position": 0.6
+      }
+    },
+    "angry": {
+      "expression": "angry",
+      "animation": "angry_shake",
+      "intensity": 0.8,
+      "duration": 2.0,
+      "parameters": {
+        "mouth_open": 0.4,
+        "eye_open": 0.8,
+        "eyebrow_position": -0.6
+      }
+    },
+    "confused": {
+      "expression": "confused",
+      "animation": "confused_tilt",
+      "intensity": 0.6,
+      "duration": 2.0,
+      "parameters": {
+        "mouth_open": 0.3,
+        "eye_open": 0.9,
+        "eyebrow_position": 0.2
+      }
+    },
+    "excited": {
+      "expression": "excited",
+      "animation": "excited_jump",
+      "intensity": 1.0,
+      "duration": 1.8,
+      "parameters": {
+        "mouth_open": 0.9,
+        "eye_open": 1.1,
+        "eyebrow_position": 0.5
+      }
+    },
+    "neutral": {
+      "expression": "neutral",
+      "animation": "idle",
+      "intensity": 0.5,
+      "duration": 0.0,
+      "parameters": {
+        "mouth_open": 0.1,
+        "eye_open": 1.0,
+        "eyebrow_position": 0.0
+      }
+    }
+  },
+  "default_emotion": "neutral",
+  "transition_duration": 0.5,
+  "blend_mode": "smooth"
+}
