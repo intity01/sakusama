@@ -20,7 +20,7 @@ from src.error import ErrorHandler, ErrorConfig
 from src.llm import LLMModule, LLMConfig, LLMProvider
 from src.memory import MemorySystem, MemoryConfig
 from src.persona import PersonaEngine, PersonaConfig
-from src.tts import TTSModule, TTSConfig, get_recommended_voice
+from src.tts import TTSModule, TTSConfig, TTSEngine, get_recommended_voice
 
 
 class AIVTuberCLI:
@@ -56,10 +56,17 @@ class AIVTuberCLI:
             self.persona_engine.create_default_personas()
         
         # Initialize TTS
+        tts_settings = self.config.get("tts", {})
+        engine_str = tts_settings.get("engine", "pyttsx3")
+        engine = TTSEngine.PYTTSX3 if engine_str == "pyttsx3" else TTSEngine.EDGE
+        
         tts_config = TTSConfig(
-            voice=self.config.get("tts", {}).get("voice", "th-TH-PremwadeeNeural"),
-            auto_play=self.config.get("tts", {}).get("auto_play", True),
-            cache_enabled=self.config.get("tts", {}).get("cache_enabled", True)
+            engine=engine,
+            rate=tts_settings.get("rate", 150),
+            volume=tts_settings.get("volume", 0.9),
+            voice_index=tts_settings.get("voice_index", 0),
+            edge_voice=tts_settings.get("edge_voice", "th-TH-PremwadeeNeural"),
+            cache_enabled=tts_settings.get("cache_enabled", True)
         )
         self.tts = TTSModule(tts_config)
         self.tts_enabled = self.config.get("tts", {}).get("enabled", True)
